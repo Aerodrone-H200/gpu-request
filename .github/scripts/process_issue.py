@@ -42,7 +42,7 @@ def process():
     jenkins_token = os.getenv("JENKINS_TOKEN")
     issue_number = os.getenv("ISSUE_NUMBER")
     github_token = os.getenv("GITHUB_TOKEN")
-
+    github_repository = os.getenv("GITHUB_REPOSITORY")
     def extract_val(label_pattern):
 
         match = re.search(fr'### {label_pattern}\s*\n+\s*(.*)', issue_body)
@@ -78,7 +78,7 @@ def process():
         "language": language,
         "mig_count": mig_count_int,
         "issue_number": issue_number,
-        "github_repository": os.getenv("GITHUB_REPOSITORY")
+        "github_repository":   github_repository
     }
     
     webhook_url = f"{jenkins_url}/generic-webhook-trigger/invoke?token={jenkins_token}"
@@ -106,8 +106,7 @@ def fail_process(issue_num, token, msg):
     print(msg)
     sys.exit(1)
 
-def post_comment(issue_num, token, body):
-    repo = os.getenv("GITHUB_REPOSITORY")
+def post_comment(issue_num, token, repo, body):
     url = f"https://api.github.com/repos/{repo}/issues/{issue_num}/comments"
     headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
     requests.post(url, json={"body": body}, headers=headers)
