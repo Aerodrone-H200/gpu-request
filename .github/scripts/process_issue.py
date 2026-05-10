@@ -57,18 +57,18 @@ def process():
     
     if requested_user != actual_sender:
         fail_process(issue_number, github_token, f"❌ 검증 실패: 입력된 ID(`{requested_user}`)와 실제 작성자(`{actual_sender}`)가 다릅니다.")
-
+    post_comment(issue_number, github_token, github_repository,f"✅ **사용자 확인 완료:** `{actual_sender}` 본인 확인이 되었습니다.")
     user_group = get_user_group_from_teams(actual_sender, github_token)
     
     if not user_group:
         fail_process(issue_number, github_token, f"❌ 권한 없음: `{actual_sender}`님은 {ORG_NAME} 조직의 등록된 팀 멤버가 아닙니다.")
-
+    post_comment(issue_number, github_token, github_repository, f"✅ **권한 확인 완료:** `{actual_sender}`님은 `{user_group}` 그룹 멤버입니다.")
     limit = GROUP_LIMITS.get(user_group, 0)
     mig_count_int = int(mig_count) if mig_count and mig_count.isdigit() else 0
     
     if mig_count_int > limit:
         fail_process(issue_number, github_token, f"❌ 할당량 초과: `{user_group}` 그룹의 최대 할당량은 {limit}개입니다.")
-
+    post_comment(issue_number, github_token, github_repository,f"✅ **GPU 할당량 확인 완료:** 요청 {mig_count_int}개 / 그룹 한도 {limit}개 → 통과!")
     payload = {
         "user": requested_user,
         "group": user_group,
