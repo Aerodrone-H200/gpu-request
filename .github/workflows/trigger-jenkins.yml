@@ -1,1 +1,36 @@
+name: Trigger Jenkins on Issue
 
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-and-trigger:
+    if: contains(github.event.issue.labels.*.name, 'provisioning')
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run Python Script
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ACTUAL_SENDER: ${{ github.actor }}
+          JENKINS_URL: ${{ secrets.JENKINS_URL }}
+          JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }} 
+        run: python .github/scripts/process_issue.py
