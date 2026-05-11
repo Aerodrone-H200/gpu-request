@@ -145,7 +145,7 @@
 
 ## 📬 문의
 
-인프라 관련 문의 또는 초대 요청은 [항공드론사업단](https://www.aerodrone.ac.kr/ko/) 페이지를 참고하세요.
+인프라 관련 문의 또는 초대 요청은 [항공드론사업단](https://www.aerodrone.ac.kr/ko/support/application/rent/application/4) 페이지를 참고하세요.
 
 ---
 
