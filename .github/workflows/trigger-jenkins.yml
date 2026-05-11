@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   check-and-trigger:
-    if: contains(github.event.issue.labels.*.name, 'provisioning')
+    if: github.event.label.name == 'provisioning'
     runs-on: self-hosted
     
     steps:
@@ -33,4 +33,5 @@ jobs:
           JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }} 
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python .github/scripts/process_issue.py
