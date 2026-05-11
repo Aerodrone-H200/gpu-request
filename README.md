@@ -54,40 +54,46 @@
 
 기본 이미지(`kau/pytorch-master`, `kau/tensorflow-master`)에 포함되지 않은 패키지가 필요할 경우 작성합니다.  
 
-🐳 kau/pytorch-master 기본 포함 패키지 — 아래는 이미 설치되어 있으므로 입력 불필요
+아래는 이미 설치되어 있으므로 입력 불필요
 <table>
-  <thead>
-    <tr><th>패키지</th><th>버전</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>torch</td><td>2.5.1</td></tr>
-    <tr><td>torchvision</td><td>0.20.1</td></tr>
-    <tr><td>vllm</td><td>0.6.6.post1</td></tr>
-    <tr><td>accelerate</td><td>latest</td></tr>
-    <tr><td>transformers</td><td>latest</td></tr>
-    <tr><td>datasets</td><td>latest</td></tr>
-    <tr><td>numpy</td><td>latest</td></tr>
-    <tr><td>pandas</td><td>latest</td></tr>
-    <tr><td>matplotlib</td><td>latest</td></tr>
-    <tr><td>scipy</td><td>latest</td></tr>
-    <tr><td>scikit-learn</td><td>latest</td></tr>
-  </tbody>
-</table>
-🐳 kau/tensorflow-master 기본 포함 패키지 — 아래는 이미 설치되어 있으므로 입력 불필요
-<table>
-  <thead>
-    <tr><th>패키지</th><th>버전</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>tensorflow</td><td>2.17.0</td></tr>
-    <tr><td>numpy</td><td>1.x (2.0 미만)</td></tr>
-    <tr><td>transformers</td><td>latest</td></tr>
-    <tr><td>datasets</td><td>latest</td></tr>
-    <tr><td>pandas</td><td>latest</td></tr>
-    <tr><td>matplotlib</td><td>latest</td></tr>
-    <tr><td>scipy</td><td>latest</td></tr>
-    <tr><td>scikit-learn</td><td>latest</td></tr>
-  </tbody>
+  <tr>
+    <td valign="top">
+      <b>🐳 kau/pytorch-master</b><br><br>
+      <table>
+        <thead><tr><th>패키지</th><th>버전</th></tr></thead>
+        <tbody>
+          <tr><td>torch</td><td>2.5.1</td></tr>
+          <tr><td>torchvision</td><td>0.20.1</td></tr>
+          <tr><td>vllm</td><td>0.6.6.post1</td></tr>
+          <tr><td>accelerate</td><td>latest</td></tr>
+          <tr><td>transformers</td><td>latest</td></tr>
+          <tr><td>datasets</td><td>latest</td></tr>
+          <tr><td>numpy</td><td>latest</td></tr>
+          <tr><td>pandas</td><td>latest</td></tr>
+          <tr><td>matplotlib</td><td>latest</td></tr>
+          <tr><td>scipy</td><td>latest</td></tr>
+          <tr><td>scikit-learn</td><td>latest</td></tr>
+        </tbody>
+      </table>
+    </td>
+    <td width="40"></td>
+    <td valign="top">
+      <b>🐳 kau/tensorflow-master</b><br><br>
+      <table>
+        <thead><tr><th>패키지</th><th>버전</th></tr></thead>
+        <tbody>
+          <tr><td>tensorflow</td><td>2.17.0</td></tr>
+          <tr><td>numpy</td><td>1.26.4</td></tr>
+          <tr><td>transformers</td><td>latest</td></tr>
+          <tr><td>datasets</td><td>latest</td></tr>
+          <tr><td>pandas</td><td>latest</td></tr>
+          <tr><td>matplotlib</td><td>latest</td></tr>
+          <tr><td>scipy</td><td>latest</td></tr>
+          <tr><td>scikit-learn</td><td>latest</td></tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
 </table>
 
 **작성 규칙**
