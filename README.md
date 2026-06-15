@@ -22,15 +22,32 @@ FaaS 형태의 서비스로 함수로 요청처리를 하도록 자동화 되어
 
 | 그룹 | 역할 | MIG 슬라이스 최대 | 주요 권한 |
 |------|------|:-----------------:|-----------|
-| **Admins** | 시스템 관리자 | 7개 | 전체 관리 및 설정 |
-| **Maintainers** | 운영 담당자 | 7개 | 이슈 승인 및 파이프라인 제어 |
-| **Developers** | 개발자 | 3개 | 요청서 작성 및 코드 실행 |
-| **Guests** | 외부 협력자 | 1개 | 결과 조회 및 제한적 요청 |
+| **Admins** | 시스템 관리자 | 14개(GPU 2개) | 전체 관리 및 설정 |
+| **Maintainers** | 운영 담당자 및 교수님 | 14개(GPU 2개) | 이슈 승인 및 파이프라인 제어 |
+| **Developers** | 석사 연구원 | 14개(GPU 2개) | 요청서 작성 및 코드 실행 |
+| **Guests** | 학사 과정 학생 및 수업 사용 | 1개 | 결과 조회 및 제한적 요청 |
 
 > 그룹은 GitHub Organization의 Teams 기능으로 관리됩니다.  
 > **초대는 관리자(Admins)가 수행**합니다. 초대 이메일을 수락한 후 이슈를 작성할 수 있습니다.
 
 ---
+
+## 🧩 GPU 할당량(`1` vs `14`) 이해하기
+ 
+H200 4장은 **두 종류의 풀**로 나뉘어 운영됩니다. 요청 시 `1` 또는 `14` 중 하나를 입력합니다.
+ 
+| 입력값 | 실제 할당 | 메모리 | 용도 |
+|:------:|----------|:------:|------|
+| **`1`** | MIG 슬라이스 1개 | 약 18GB | 작은 학습 · 추론 · 실습 |
+| **`14`** | **GPU 2장 통째 (물리 GPU 2·3 전체)** | 약 282GB (141GB × 2) | 대형 모델 학습 · 분산 학습 · 대용량 메모리 작업 |
+
+### ⚠️ `14`는 슬라이스 14개가 아닙니다
+ 
+`14`는 **"물리 GPU 2장을 통째로 빌리는 것"** 을 의미합니다. MIG로 쪼갠 슬라이스 14개가 아닙니다.
+ 
+- MIG 슬라이스와 달리 **GPU 간 통신(NVLink)** 과 **통합 메모리**가 가능합니다.
+- 따라서 `torchrun`, `DistributedDataParallel(DDP)`, `DataParallel` 같은 **다중 GPU 분산 학습**과 **큰 모델**을 돌릴 수 있습니다.
+- `14` 요청은 GPU 2장을 한 작업이 **독점**하므로, **동시에 한 건만 실행**되고 나머지는 큐에서 순서대로 대기합니다.
 
 ## 🚀 사용 절차
 
@@ -52,50 +69,70 @@ FaaS 형태의 서비스로 함수로 요청처리를 하도록 자동화 되어
 | GPU 할당량 | MIG 슬라이스 수 (그룹 한도 내) | `1` |
 
 #### 📦 추가 필요 모듈 작성 방법
-
-기본 이미지(`kau/pytorch-master`, `kau/tensorflow-master`)에 포함되지 않은 패키지가 필요할 경우 작성합니다.  
-
-아래는 이미 설치되어 있으므로 입력 불필요
+ 
+기본 이미지(`kau/pytorch-master`, `kau/tensorflow-master`)에 포함되지 않은 패키지가 필요할 경우에만 작성합니다.
+ 
+아래 패키지는 **이미 설치되어 있으므로 입력 불필요**합니다.
+ 
 <table>
   <tr>
     <td valign="top">
-      <b>🐳 kau/pytorch-master</b><br><br>
+      <b>🐳 kau/pytorch-master</b><br>
+      <sub>CUDA 13.0 기반</sub><br><br>
       <table>
         <thead><tr><th>패키지</th><th>버전</th></tr></thead>
         <tbody>
-          <tr><td>torch</td><td>2.5.1</td></tr>
-          <tr><td>torchvision</td><td>0.20.1</td></tr>
-          <tr><td>vllm</td><td>0.6.6.post1</td></tr>
-          <tr><td>accelerate</td><td>latest</td></tr>
-          <tr><td>transformers</td><td>latest</td></tr>
-          <tr><td>datasets</td><td>latest</td></tr>
-          <tr><td>numpy</td><td>latest</td></tr>
-          <tr><td>pandas</td><td>latest</td></tr>
-          <tr><td>matplotlib</td><td>latest</td></tr>
-          <tr><td>scipy</td><td>latest</td></tr>
-          <tr><td>scikit-learn</td><td>latest</td></tr>
+          <tr><td>torch</td><td>2.11.0</td></tr>
+          <tr><td>torchvision</td><td>0.26.0</td></tr>
+          <tr><td>torchaudio</td><td>2.11.0</td></tr>
+          <tr><td>triton</td><td>3.6.0</td></tr>
+          <tr><td>vllm</td><td>0.22.0</td></tr>
+          <tr><td>transformers</td><td>5.10.1</td></tr>
+          <tr><td>accelerate</td><td>1.13.0</td></tr>
+          <tr><td>datasets</td><td>4.8.5</td></tr>
+          <tr><td>tokenizers</td><td>0.22.2</td></tr>
+          <tr><td>safetensors</td><td>0.7.0</td></tr>
+          <tr><td>huggingface_hub</td><td>1.17.0</td></tr>
+          <tr><td>numpy</td><td>2.2.6</td></tr>
+          <tr><td>pandas</td><td>2.3.3</td></tr>
+          <tr><td>scipy</td><td>1.15.3</td></tr>
+          <tr><td>scikit-learn</td><td>1.7.2</td></tr>
+          <tr><td>matplotlib</td><td>3.10.9</td></tr>
+          <tr><td>pillow</td><td>12.2.0</td></tr>
+          <tr><td>opencv-python-headless</td><td>4.13.0.92</td></tr>
         </tbody>
       </table>
     </td>
     <td width="40"></td>
     <td valign="top">
-      <b>🐳 kau/tensorflow-master</b><br><br>
+      <b>🐳 kau/tensorflow-master</b><br>
+      <sub>CUDA 12.5 기반</sub><br><br>
       <table>
         <thead><tr><th>패키지</th><th>버전</th></tr></thead>
         <tbody>
-          <tr><td>tensorflow</td><td>2.17.0</td></tr>
-          <tr><td>numpy</td><td>1.26.4</td></tr>
-          <tr><td>transformers</td><td>latest</td></tr>
-          <tr><td>datasets</td><td>latest</td></tr>
-          <tr><td>pandas</td><td>latest</td></tr>
-          <tr><td>matplotlib</td><td>latest</td></tr>
-          <tr><td>scipy</td><td>latest</td></tr>
-          <tr><td>scikit-learn</td><td>latest</td></tr>
+          <tr><td>tensorflow</td><td>2.21.0</td></tr>
+          <tr><td>keras</td><td>3.12.2</td></tr>
+          <tr><td>transformers</td><td>5.10.1</td></tr>
+          <tr><td>datasets</td><td>4.8.5</td></tr>
+          <tr><td>tokenizers</td><td>0.22.2</td></tr>
+          <tr><td>safetensors</td><td>0.7.0</td></tr>
+          <tr><td>huggingface_hub</td><td>1.17.0</td></tr>
+          <tr><td>numpy</td><td>2.2.6</td></tr>
+          <tr><td>pandas</td><td>2.3.3</td></tr>
+          <tr><td>scipy</td><td>1.15.3</td></tr>
+          <tr><td>scikit-learn</td><td>1.7.2</td></tr>
+          <tr><td>matplotlib</td><td>3.10.9</td></tr>
+          <tr><td>pillow</td><td>12.2.0</td></tr>
+          <tr><td>h5py</td><td>3.14.0</td></tr>
         </tbody>
       </table>
     </td>
   </tr>
 </table>
+
+> ⚠️ 위 버전은 기본 이미지 기준이며, 이미지 업데이트 시 변경될 수 있습니다.
+> 특히 `torch` · `torchvision` · `tensorflow` 를 다른 버전으로 강제 업그레이드(`--upgrade`)하면
+> CUDA 및 의존성 충돌이 발생할 수 있으니, 꼭 필요한 경우가 아니면 기본 버전을 그대로 사용하세요.
 
 **작성 규칙**
 
@@ -135,21 +172,21 @@ FaaS 형태의 서비스로 함수로 요청처리를 하도록 자동화 되어
 ---
 
 ## ⚠️ 주의사항
-
-- 요청 전 본인의 **그룹 MIG 한도**를 반드시 확인하세요. 초과 요청은 자동 반려됩니다.
+ 
+- 요청 전 본인의 **그룹 GPU 한도**를 반드시 확인하세요. 초과 요청은 자동 반려됩니다.
 - 실행할 코드 레포지토리는 **Public이거나, 접근 가능한 Private 레포**여야 합니다.
 - 컨테이너는 실행 완료 후 **즉시 삭제**됩니다. 필요한 결과물은 코드 내에서 미리 저장 처리하세요.
 - 이 레포지토리는 **요청서 제출 전용**입니다. 인프라 관련 문의는 관리자에게 별도로 연락하세요.
-- MIG 슬라이스를 2개 이상 요청하여 동시 사용하는 경우, 다중 GPU 학습 환경(분산 설정 등)은 사용자가 직접 코드 내에서 구성해야 합니다. 
-
+- **`14`(GPU 2장 통째)로 다중 GPU 학습**을 하는 경우, 분산 학습 설정(`DistributedDataParallel`, `torchrun` 등)은 사용자가 직접 코드 내에서 구성해야 합니다.
+- **`14` 요청은 GPU 2장을 한 작업이 독점**하므로, 동시에 한 건만 실행됩니다. 다른 `14` 요청은 큐에서 대기합니다.
 ---
-
+ 
 ## 📬 문의
-
+ 
 인프라 관련 문의 또는 초대 요청은 [항공드론사업단](https://www.aerodrone.ac.kr/ko/support/application/rent/application/4) 페이지를 참고하세요.
-
+ 
 ---
-
+ 
 <div align="center">
   <sub> AeroDrone Business Unit · H200 GPU Infrastructure</sub>
 </div>
