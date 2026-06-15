@@ -43,10 +43,12 @@ body:
         - "R"
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: gpu_mig_count
     attributes:
       label: "GPU 할당량 (MIG 갯수)" 
-      placeholder: "예: 1 (H200의 MIG 슬라이스 수)"
+      options:
+        - 1
+        - 14
     validations:
       required: true
