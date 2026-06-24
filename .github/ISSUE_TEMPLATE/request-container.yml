@@ -46,9 +46,10 @@ body:
   - type: dropdown
     id: gpu_mig_count
     attributes:
-      label: "GPU 할당량 (MIG 갯수)" 
+      label: "GPU 할당량 (MIG 갯수)"
+      description: "1 = MIG 슬라이스 1개 (작은 작업) / 7 = GPU 1장 통째 (큰 작업)"
       options:
         - 1
-        - 14
+        - 7
     validations:
       required: true
